@@ -10,9 +10,9 @@
            [net.lingala.zip4j.exception ZipException]))
 
 (defn download
-  "Downloads a Darwin Core Archive from the supplied URL to the supplied dir."
-  [url dir]
-  (DownloadUtil/download (URL. url) (File. dir)))
+  "Downloads a Darwin Core Archive from the supplied URL to the supplied file."
+  [url file]
+  (DownloadUtil/download (URL. url) (File. file)))
 
 (defn unzip
   "Unzips the supplied ZIP file into the supplied directory."
