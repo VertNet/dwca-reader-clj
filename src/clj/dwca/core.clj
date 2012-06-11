@@ -23,6 +23,6 @@
 (defn get-records
   "Returns a sequence of DarwinCoreRecord objects from an archive directory."
   [dir]
-  (let [ archive (ArchiveFactory/openArchive (File. dir))]
+  (let [archive (ArchiveFactory/openArchive (File. dir))]
     (iterator-seq (.iteratorDwc archive))))
 
