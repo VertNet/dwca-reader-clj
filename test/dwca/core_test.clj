@@ -35,3 +35,12 @@
   "Check opening archive."
   (let [url "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"]
     (count (open url)) => 968))
+
+(fact
+  "Check number of fields."
+  (let [url "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"
+        records (open url)]
+    (for [rec records]
+      (count (field-vals rec)) => 182)
+    (for [rec records]
+      (count (field-keys rec)) => 182)))
