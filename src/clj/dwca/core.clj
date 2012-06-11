@@ -37,13 +37,13 @@
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
     (let [fields (->> x .getClass .getDeclaredFields vec)
-          super-fields (->> rec .getClass .getSuperclass .getDeclaredFields vec)]
+          super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
       (vec (map #(.getName %) (concat fields (subvec super-fields 3))))))
   (field-vals
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
     (let [fields (->> x .getClass .getDeclaredFields vec)
-          super-fields (->> rec .getClass .getSuperclass .getDeclaredFields vec)]
+          super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
       (vec (map #(field-val % x) (concat fields (subvec super-fields 3)))))))
 
 (defn download
