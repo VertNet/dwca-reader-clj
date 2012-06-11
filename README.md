@@ -15,12 +15,7 @@ Download, unzip, and iterate through Darwin Core records in an archive:
 
 ```clojure
 (use `dwca.core)
-(let [url "https://github.com/VertNet/dwca-reader-clj/blob/develop/dev/archive-occ.zip?raw=true"
-      file "/home/eighty/archive-occ.zip"
-      dir "/home/eighty"
-      archive (str dir "/archive-occ")]
-  (download url file) 
-  (unzip file dir) 
-  (for [record (get-records archive)]
-    (println record)))
+(let [url "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"]
+  (for [record (open url)]
+    (field-vals record)))
 ```
