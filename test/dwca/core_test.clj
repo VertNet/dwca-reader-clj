@@ -30,3 +30,8 @@
   "Check getting records from an archive."
   (let [dir (.getPath (io/resource "archive-occ"))]
     (count (get-records dir)) => 1534))
+
+(fact
+  "Check opening archive."
+  (let [url "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"]
+    (count (open url)) => 968))
