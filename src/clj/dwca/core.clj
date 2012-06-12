@@ -13,16 +13,16 @@
            [org.gbif.dwc.text ArchiveFactory]
            [org.gbif.file DownloadUtil]))
 
-(defn index-of
-  "Return the index of the supplied field key."
-  [rec field-key]
-  (positions #{field-key} (field-keys rec)))
-
 (defprotocol IDarwinCoreRecord
   "Protocol for accessing DarwinCoreRecord fields."
   (fields [x])
   (field-keys [x])
   (field-vals [x]))
+
+(defn index-of
+  "Return the index of the supplied field key."
+  [rec field-key]
+  (positions #{field-key} (field-keys rec)))
 
 (defn field-val
   "Return the string value of the supplied record field.
