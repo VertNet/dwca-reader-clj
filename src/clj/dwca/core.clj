@@ -1,7 +1,8 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
   (:require [clojure.java.io :as io])
-  (:use [clojure.string :only (join split)])
+  (:use [clojure.string :only (join split)]
+        [clojure.contrib.seq-utils :only (positions)])
   (:import [com.google.common.io Files]
            [java.io File]
            [java.lang.reflect Field]
@@ -11,6 +12,11 @@
            [org.gbif.dwc.record DarwinCoreRecord]
            [org.gbif.dwc.text ArchiveFactory]
            [org.gbif.file DownloadUtil]))
+
+(defn index-of
+  "Return the index of the supplied field key."
+  [rec field-key]
+  (positions #{field-key} (field-keys rec)))
 
 (defprotocol IDarwinCoreRecord
   "Protocol for accessing DarwinCoreRecord fields."
@@ -23,7 +29,7 @@
 
   TODO: Null values are returned as string NULL since Clojure split function
   skips trailing nils or empty strings. Important for Cascalog queries using
-  hfs-delimited taps.
+  hfs-delimited tap.s
   "
   [^Field field ^DarwinCoreRecord rec]
   {:pre [(instance? Field field)
@@ -37,7 +43,7 @@
   (fields
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
-    (zipmap (keys x) (vals x)))
+    (zipmap (field-keys x) (field-vals x)))
   (field-keys
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
