@@ -1,7 +1,8 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
   (:require [clojure.java.io :as io])
-  (:use [clojure.string :only (join split)])
+  (:use [clojure.string :only (join split lower-case)]
+        [clojure.contrib.seq-utils :only (positions)])
   (:import [com.google.common.io Files]
            [java.io File]
            [java.lang.reflect Field]
@@ -18,31 +19,45 @@
   (field-keys [x])
   (field-vals [x]))
 
+(defn index-of
+  "Return the index of the supplied field key."
+  [rec field-key]
+  (positions #{field-key} (field-keys rec)))
+
 (defn field-val
-  "Return the string value of the supplied record field."
+  "Return the string value of the supplied record field.
+
+  TODO: Null values are returned as string _ since Clojure split function
+  skips trailing nils and empty strings. Important for Cascalog queries using
+  hfs-delimited taps."
   [^Field field ^DarwinCoreRecord rec]
   {:pre [(instance? Field field)
          (instance? DarwinCoreRecord rec)]}
   (.setAccessible field true)
   (let [val (.get field rec)]
-    (cond val (.trim val))))
+    (if val (.trim val) "_")))
 
 (extend-protocol IDarwinCoreRecord
   DarwinCoreRecord
   (fields
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
-    (zipmap (keys x) (vals x)))
+    (zipmap (field-keys x) (field-vals x)))
   (field-keys
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
-    (let [fields (->> x .getClass .getDeclaredFields)]
-      (vec (map #(.getName %) fields))))
+    (let [fields (->> x .getClass .getDeclaredFields vec)
+          super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
+      ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
+      (vec (map #(keyword (lower-case (.getName %)))
+                (concat fields (subvec super-fields 3))))))
   (field-vals
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
-    (let [fields (->> x .getClass .getDeclaredFields)]
-      (vec (map #(field-val % x) fields)))))
+    (let [fields (->> x .getClass .getDeclaredFields vec)
+          super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
+      ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
+      (vec (map #(field-val % x) (concat fields (subvec super-fields 3)))))))
 
 (defn download
   "Downloads a Darwin Core Archive from the supplied URL to the supplied file."
