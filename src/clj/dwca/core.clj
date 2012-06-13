@@ -1,7 +1,7 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
   (:require [clojure.java.io :as io])
-  (:use [clojure.string :only (join split)]
+  (:use [clojure.string :only (join split lower-case)]
         [clojure.contrib.seq-utils :only (positions)])
   (:import [com.google.common.io Files]
            [java.io File]
@@ -27,16 +27,15 @@
 (defn field-val
   "Return the string value of the supplied record field.
 
-  TODO: Null values are returned as string NULL since Clojure split function
-  skips trailing nils or empty strings. Important for Cascalog queries using
-  hfs-delimited tap.s
-  "
+  TODO: Null values are returned as string _ since Clojure split function
+  skips trailing nils and empty strings. Important for Cascalog queries using
+  hfs-delimited taps."
   [^Field field ^DarwinCoreRecord rec]
   {:pre [(instance? Field field)
          (instance? DarwinCoreRecord rec)]}
   (.setAccessible field true)
   (let [val (.get field rec)]
-    (if val (.trim val) "NULL")))
+    (if val (.trim val) "_")))
 
 (extend-protocol IDarwinCoreRecord
   DarwinCoreRecord
@@ -49,12 +48,15 @@
     {:pre [(instance? DarwinCoreRecord x)]}
     (let [fields (->> x .getClass .getDeclaredFields vec)
           super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
-      (vec (map #(.getName %) (concat fields (subvec super-fields 3))))))
+      ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
+      (vec (map #(keyword (lower-case (.getName %)))
+                (concat fields (subvec super-fields 3))))))
   (field-vals
     [^DarwinCoreRecord x]
     {:pre [(instance? DarwinCoreRecord x)]}
     (let [fields (->> x .getClass .getDeclaredFields vec)
           super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
+      ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
       (vec (map #(field-val % x) (concat fields (subvec super-fields 3)))))))
 
 (defn download
