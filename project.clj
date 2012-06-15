@@ -1,4 +1,4 @@
-(defproject dwca-reader-clj "0.1.0-SNAPSHOT"
+(defproject dwca-reader-clj "0.3.0-SNAPSHOT"
   :description "Clojure wrapper for the GBIF Darwin Core Archive Reader library."
   :source-path "src/clj"
   :resources-path "resources"
