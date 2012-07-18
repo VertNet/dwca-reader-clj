@@ -7,7 +7,7 @@ This project provides a Clojure wrapper around the [GBIF Darwin Core Archive Rea
 In your `project.clj` file:
 
 ```clojure
-:dependencies [dwca-reader-clj "0.2.0-SNAPSHOT"]
+:dependencies [dwca-reader-clj "0.5.0-SNAPSHOT"]
 ```
 Or in your POM file:
 
