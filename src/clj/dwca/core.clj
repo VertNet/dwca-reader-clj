@@ -25,17 +25,13 @@
   (positions #{field-key} (field-keys rec)))
 
 (defn field-val
-  "Return the string value of the supplied record field.
-
-  TODO: Null values are returned as string _ since Clojure split function
-  skips trailing nils and empty strings. Important for Cascalog queries using
-  hfs-delimited taps."
+  "Return the string value of the supplied record field."
   [^Field field ^DarwinCoreRecord rec]
   {:pre [(instance? Field field)
          (instance? DarwinCoreRecord rec)]}
   (.setAccessible field true)
   (let [val (.get field rec)]
-    (if val (.trim val) "_")))
+    (if val (.trim val))))
 
 (extend-protocol IDarwinCoreRecord
   DarwinCoreRecord
