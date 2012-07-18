@@ -15,7 +15,7 @@ Or in your POM file:
 <dependency>
   <groupId>dwca-reader-clj</groupId>
   <artifactId>dwca-reader-clj</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.5.0-SNAPSHOT</version>
 </dependency>
 ```
 
