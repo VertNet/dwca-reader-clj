@@ -1,8 +1,7 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
   (:require [clojure.java.io :as io])
-  (:use [clojure.string :only (join split lower-case)]
-        [clojure.contrib.seq-utils :only (positions)])
+  (:use [clojure.string :only (join split lower-case)])
   (:import [com.google.common.io Files]
            [java.io File]
            [java.lang.reflect Field]
@@ -22,7 +21,7 @@
 (defn index-of
   "Return the index of the supplied field key."
   [rec field-key]
-  (positions #{field-key} (field-keys rec)))
+  (.indexOf (field-keys rec) field-key))
 
 (defn field-val
   "Return the string value of the supplied record field."
