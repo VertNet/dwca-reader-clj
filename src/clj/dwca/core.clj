@@ -1,7 +1,7 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
   (:require [clojure.java.io :as io])
-  (:use [clojure.string :only (join split lower-case)])
+  (:use [clojure.string :as s :only (lower-case, replace)])
   (:import [com.google.common.io Files]
            [java.io File]
            [java.lang.reflect Field]
@@ -44,7 +44,7 @@
     (let [fields (->> x .getClass .getDeclaredFields vec)
           super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
       ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
-      (vec (map #(keyword (lower-case (.getName %)))
+      (vec (map #(keyword (s/lower-case (.getName %)))
                 (concat fields (subvec super-fields 3))))))
   (field-vals
     [^DarwinCoreRecord x]
@@ -74,7 +74,9 @@
 (defn archive-name
   "Return archive name from supplied URL as defined by the IPT."
   [url]
-  (str "dwca-" (nth (split url #"=") 1)))
+  (if (.endsWith url ".zip")
+    (str "dwca-" (s/replace (last (.split url "/")) ".zip" ""))
+    (str "dwca-" (nth (.split url "=") 1))))
 
 (defn open
   "Open archive at supplied URL and return a sequence of DarwinCoreRecord objects."
