@@ -32,6 +32,12 @@
     (count (get-records dir)) => 1534))
 
 (fact
+  "Check index-of function."
+  (let [dir (.getPath (io/resource "archive-occ"))
+        rec (first (get-records dir))]
+    (index-of rec :scientificname) => 159))
+
+(fact
   "Check opening archive."
   (let [url "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"]
     (count (open url)) => 968))
