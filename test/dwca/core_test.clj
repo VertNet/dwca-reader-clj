@@ -50,3 +50,10 @@
       (count (field-vals rec)) => 182)
     (for [rec records]
       (count (field-keys rec)) => 182)))
+
+(fact
+  "Check archive-name function."
+  (let [url0 "http://vertnet.nhm.ku.edu:8080/ipt/archive.do?r=ttrs_mammals"
+        url1 "http://128.32.146.144/VertNet/Data/MCZMammalsBOM.zip"]
+    (archive-name url0) => "dwca-ttrs_mammals"
+    (archive-name url1) => "dwca-MCZMammalsBOM"))
