@@ -1,7 +1,7 @@
 (ns dwca.core
   "This namespace provides a Clojure API to the GBIF dwca-reader library."
-  (:require [clojure.java.io :as io])
-  (:use [clojure.string :as s :only (lower-case, replace)])
+  (:require [clojure.java.io :as io]
+            [clj-http.client :as client :only (get)])
   (:import [com.google.common.io Files]
            [java.io File]
            [java.lang.reflect Field]
@@ -44,7 +44,7 @@
     (let [fields (->> x .getClass .getDeclaredFields vec)
           super-fields (->> x .getClass .getSuperclass .getDeclaredFields vec)]
       ;; subvec 3 skips the first three declared fields in DarwinCoreTaxon.
-      (vec (map #(keyword (s/lower-case (.getName %)))
+      (vec (map #(keyword (clojure.string/lower-case (.getName %)))
                 (concat fields (subvec super-fields 3))))))
   (field-vals
     [^DarwinCoreRecord x]
@@ -57,7 +57,10 @@
 (defn download
   "Downloads a Darwin Core Archive from the supplied URL to the supplied file."
   [url file]
-  (DownloadUtil/download (URL. url) (File. file)))
+  (let [response (client/get url {:as :byte-array})
+        writer (clojure.java.io/output-stream file)]
+    (with-open [f writer]
+      (.write f (:body response)))))
 
 (defn unzip
   "Unzips the supplied ZIP file into the supplied directory."
@@ -75,18 +78,17 @@
   "Return archive name from supplied URL as defined by the IPT."
   [url]
   (if (.endsWith url ".zip")
-    (str "dwca-" (s/replace (last (.split url "/")) ".zip" ""))
+    (str "dwca-" (clojure.string/replace (last (.split url "/")) ".zip" ""))
     (str "dwca-" (nth (.split url "=") 1))))
 
 (defn open
   "Open archive at supplied URL and return a sequence of DarwinCoreRecord objects."
-  [url]
+  [url & {:keys [path] :or {path (.getPath (Files/createTempDir))}}]
   (let [temp-dir (Files/createTempDir)
         temp-path (.getPath temp-dir)
         archive-name (archive-name url)
         zip-path (str temp-path "/" archive-name ".zip")
         archive-path (str temp-path "/" archive-name)]
-    (def cake archive-path)
     (download url zip-path)
     (unzip zip-path archive-path)
     (get-records archive-path)))
