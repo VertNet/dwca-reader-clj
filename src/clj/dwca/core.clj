@@ -12,6 +12,11 @@
            [org.gbif.dwc.text ArchiveFactory]
            [org.gbif.file DownloadUtil]))
 
+(defn gen-uuid
+  "Return a randomly generated UUID string."
+  [& x]
+  (str (java.util.UUID/randomUUID)))
+
 (defprotocol IDarwinCoreRecord
   "Protocol for accessing DarwinCoreRecord fields."
   (fields [x])
@@ -84,11 +89,11 @@
 (defn open
   "Open archive at supplied URL and return a sequence of DarwinCoreRecord objects."
   [url & {:keys [path] :or {path (.getPath (Files/createTempDir))}}]
-  (let [temp-dir (Files/createTempDir)
-        temp-path (.getPath temp-dir)
-        archive-name (archive-name url)
-        zip-path (str temp-path "/" archive-name ".zip")
-        archive-path (str temp-path "/" archive-name)]
+  (let [archive-name (archive-name url)
+        uuid (gen-uuid)
+        zip-path (format "%s/%s-%s.zip" path archive-name uuid)
+        archive-path (format "%s/%s-%s" path archive-name uuid)]
     (download url zip-path)
     (unzip zip-path archive-path)
+    (io/delete-file zip-path)
     (get-records archive-path)))
