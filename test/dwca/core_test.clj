@@ -35,7 +35,7 @@
   "Check index-of function."
   (let [dir (.getPath (io/resource "archive-occ"))
         rec (first (get-records dir))]
-    (index-of rec :scientificname) => 159))
+    (index-of rec :scientificname) => 137))
 
 (fact
   "Check opening archive."
