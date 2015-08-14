@@ -1,4 +1,4 @@
-(defproject dwca-reader-clj/dwca-reader-clj "0.10.1-SNAPSHOT" 
+(defproject dwca-reader-clj/dwca-reader-clj "0.20" 
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.gbif/dwca-reader "1.20"]
                  [net.lingala.zip4j/zip4j "1.3.1"]
