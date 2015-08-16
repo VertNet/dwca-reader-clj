@@ -1,4 +1,5 @@
-(defproject dwca-reader-clj/dwca-reader-clj "0.20" 
+(defproject dwca-reader-clj/dwca-reader-clj "0.20-SNAPSHOT" 
+  :description "Clojure wrapper for the GBIF Darwin Core Archive Reader library version 1.20.")
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.gbif/dwca-reader "1.20"]
                  [net.lingala.zip4j/zip4j "1.3.1"]
@@ -24,4 +25,10 @@
              "-Xms1024M"
              "-Xmx1048M"
              "-server"]
-  :description "Clojure wrapper for the GBIF Darwin Core Archive Reader library.")
+  :url "https://github.com/VertNet/dwca-reader-clj"
+  :signing {:gpg-key "gtuco.btuco@gmail.com"}
+  :deploy-repositories [["clojars" {:creds :gpg}]]
+  :scm {:name "git"
+        :url "https://github.com/VertNet/dwca-reader-clj"}
+  :license {:name "Apache License, Version 2.0"
+                :url "http://www.apache.org/license/LICENSE-2.0.html"}
