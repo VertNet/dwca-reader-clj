@@ -4,7 +4,7 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/license/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [org.gbif/dwca-reader "1.20"]
+                 [org.gbif/dwca-reader "1.21"]
                  [net.lingala.zip4j/zip4j "1.3.1"]
                  [com.google.guava/guava "12.0"]
                  [clj-http "0.5.7"]
