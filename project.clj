@@ -1,5 +1,5 @@
-(defproject dwca-reader2-clj/dwca-reader-clj "0.20-SNAPSHOT" 
-  :description "Clojure wrapper for the GBIF Darwin Core Archive Reader library version 1.20."
+(defproject dwca-reader2-clj/dwca-reader-clj "0.21-SNAPSHOT" 
+  :description "Clojure wrapper for the GBIF Darwin Core Archive Reader library version 1.21."
   :url "https://github.com/VertNet/dwca-reader-clj"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/license/LICENSE-2.0.html"}
